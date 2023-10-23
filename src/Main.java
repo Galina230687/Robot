@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        for (int i = 0; i > LENGHT; i++) {
+        for (int i = 0; i < LENGHT; i++) {
 
             Runnable logic = () -> {  // содержание потока
 
