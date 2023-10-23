@@ -2,7 +2,6 @@ import java.util.*;
 
 public class Main {
 
-
     public static String LETTERS = "RLRFR";
     public static int LENGHT = 10; // должно быть 1000
     public static char NEED_COUNT_CHAR = 'R';
@@ -10,27 +9,26 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Runnable logic = () -> {  // содержание потока
-            int i = 0;
-            while (i < LENGHT) {
+        for (int i = 0; i > LENGHT; i++) {
+
+            Runnable logic = () -> {  // содержание потока
+
                 String TMP = generateRoute(LETTERS, LENGHT);
-                System.out.println(TMP + "->" + countChar(TMP, NEED_COUNT_CHAR));
-                i++;
+                int frequency = countChar(TMP, NEED_COUNT_CHAR);
+                System.out.println(TMP + "->" + frequency);
+
 
                 synchronized (SIZE_TO_FREQ) {
-                    if (SIZE_TO_FREQ.containsKey(countChar(TMP, NEED_COUNT_CHAR))) {
-                        SIZE_TO_FREQ.put(countChar(TMP, NEED_COUNT_CHAR), SIZE_TO_FREQ.get(countChar(TMP, NEED_COUNT_CHAR)) + 1);
+                    if (SIZE_TO_FREQ.containsKey(frequency)) {
+                        SIZE_TO_FREQ.put(frequency, SIZE_TO_FREQ.get(frequency) + 1);
                     } else {
-                        SIZE_TO_FREQ.put(countChar(TMP, NEED_COUNT_CHAR), 1);
+                        SIZE_TO_FREQ.put(frequency, 1);
                     }
                 }
-            }
+            };
 
-        };
-
-        Thread thread = new Thread(logic); // новый поток
-        thread.start(); // запуск потока
-        //thread.stop();
+            logic.run();
+        }
 
 
         List<Map.Entry<Integer, Integer>> result = SIZE_TO_FREQ.entrySet().stream()
@@ -38,7 +36,7 @@ public class Main {
                 .toList();
 
         Iterator<Map.Entry<Integer, Integer>> iterator = result.iterator();
-        Map.Entry<Integer, Integer> entry = iterator.next();
+        Map.Entry<Integer, Integer> entry;
         System.out.println("Самое частое количество повторений " + result.get(0).getKey() + " (встретилось " + result.get(0).getValue() + " раз)");
 
         System.out.println("Другие размеры:");
